@@ -1,6 +1,8 @@
+from flask import request
 from flask_restful import Resource
 from werkzeug.exceptions import NotFound
 
+from bookshelf.books.model import Book
 from bookshelf.books.repository import BookRepository
 
 
@@ -24,3 +26,19 @@ class BookResource(Resource):
                 }
             }
         }
+
+    def put(self, book_id: str):
+        book_data = request.json
+        book = Book(id=book_data['data']['id'], title=book_data['data']['attributes']['title'])
+
+        self._book_repository.save_book(book)
+
+        return {
+            "data": {
+                "type": "Book",
+                "id": book.id,
+                "attributes": {
+                    "title": book.title
+                }
+            }
+        }, 201

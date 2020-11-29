@@ -44,3 +44,21 @@ class BookResourceTests(TestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertEqual(expected_response, response.json)
+
+    def test_put_book(self):
+        payload = {
+            "data": {
+                "type": "Book",
+                "id": self.book.id,
+                "attributes": {
+                    "title": self.book.title
+                }
+            }
+        }
+
+        response = self.test_client.put("/books/book_1", json=payload)
+
+        self.assertEqual(201, response.status_code)
+
+        stored_book = self.repo.get_book(self.book.id)
+        self.assertEqual(self.book, stored_book)
